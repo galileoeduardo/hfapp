@@ -1,9 +1,12 @@
 # hfapp
 Template ASP.NET Core MVC
 
-#Requirements
+#Isntall Requirements
+
 .NET SDK 7.0
+
 .NET Runtime 7.0
+
 Entity Framework Core .NET Command-line Tools 7.0.12
 
 If you have already installed entity framework, update to latest version:
