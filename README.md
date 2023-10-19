@@ -24,11 +24,17 @@ git clone https://github.com/galileoeduardo/hfapp.git
 Run migrations:
 ```bash
 cd hfapp\HFApp.WEB
-dotnet ef migrations add Initial
-dotnet ef database update
+dotnet ef migrations add hf --context HFDbContext
+dotnet ef database update --context HFDbContext
+
+dotnet ef migrations add auth --context AuthDbContext
+dotnet ef database update --context AuthDbContext
 ```
 Reset migrations:
 ```bash
-dotnet ef database drop --force
-dotnet ef migrations remove
+dotnet ef database drop --context HFDbContext --force
+dotnet ef migrations remove --context HFDbContext --force
+
+dotnet ef migrations remove --context AuthDbContext --force
+dotnet ef migrations remove --context AuthDbContext --force
 ```

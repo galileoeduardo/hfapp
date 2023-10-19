@@ -12,6 +12,11 @@ namespace HFApp.WEB.Models.Domain.Entities
 
         [JsonIgnore]
         public MineTypesEntity MineTypes { get; set; } = null!;
-        
+
+        public int UserId { get; set; }
+
+        [JsonIgnore]
+        public UserEntity User { get; set; } = null!;
+
     }
 }

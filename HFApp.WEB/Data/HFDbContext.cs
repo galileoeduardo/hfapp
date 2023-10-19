@@ -13,33 +13,23 @@ namespace HFApp.WEB.Data
 {
     public class HFDbContext : DbContext
     {
-        public HFDbContext(DbContextOptions options) : base(options)
+        public HFDbContext(DbContextOptions<HFDbContext> options) : base(options)
         {
         }
 
         public DbSet<UserEntity> UserEntities { get; set; }
-        public DbSet<RoleEntity> RoleEntities { get; set; }
+        public DbSet<FileEntity> FileEntities { get; set; }
+        public DbSet<MineTypesEntity> MineTypesEntities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<RoleEntity>().HasData(
-              new RoleEntity() { Id = 1, CreatedAt = DateTime.UtcNow, Name ="Administrator", Description = "All features privileges" },
-              new RoleEntity() { Id = 2, CreatedAt = DateTime.UtcNow, Name = "User", Description = "Only users features privileges" }
-           );
-
             modelBuilder.Entity<UserEntity>().HasData(
-               new UserEntity() { Id = 1, CreatedAt = DateTime.UtcNow, Name = "Administrator", Email = "admin@email.com", RoleId = 1},
-               new UserEntity() { Id = 2, CreatedAt = DateTime.UtcNow, Name = "Josuel Lopes", Email = "josuel.lopes@email.com", RoleId = 2 },
-               new UserEntity() { Id = 3, CreatedAt = DateTime.UtcNow, Name = "Eduardo Vieira", Email = "eduardo.vieira@email.com", RoleId = 2 }
-            );
-
-            modelBuilder.Entity<RoleEntity>()
-                .HasMany(p => p.User)
-                .WithOne(p => p.Role)
-                .HasForeignKey(b => b.RoleId)
-                .IsRequired();
+              new UserEntity() { Id = 1, CreatedAt = DateTime.UtcNow, IdentityUserId = new Guid("9317279f-639b-420f-8a9c-363a4cacabc5") },
+              new UserEntity() { Id = 2, CreatedAt = DateTime.UtcNow,  IdentityUserId = new Guid("9317279f-639b-420f-8a9c-363a4cacabc5") },
+              new UserEntity() { Id = 3, CreatedAt = DateTime.UtcNow, IdentityUserId = new Guid("9317279f-639b-420f-8a9c-363a4cacabc5") }
+           );
 
             modelBuilder.Entity<MineTypesEntity>().HasData(
               new MineTypesEntity() { Id = 1, CreatedAt = DateTime.UtcNow, Extension = ".aac", Kind = "AAC audio", Type = "audio/aac" },

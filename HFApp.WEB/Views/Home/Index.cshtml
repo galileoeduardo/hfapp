@@ -1,8 +1,16 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> signInManager
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+    @if (!signInManager.IsSignedIn(User)){
+        <h3>Welcome please go to login page and choose one user:</h3>
+        <ul class="list-group list-group-light">
+            <li class="list-group-item">sa | sa@123 | superuser</li>
+            <li class="list-group-item">josuel.lopes | josuel.lopes@123 | admin</li>
+            <li class="list-group-item">eduardo.vieira | eduardo.vieira@123 | user</li>
+        </ul>
+    }
+</h3>

@@ -6,11 +6,9 @@ namespace HFApp.WEB.Models.Domain.Entities
 {
     public class UserEntity : BaseEntity
     {
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public int RoleId { get; set; }
+        public Guid IdentityUserId { get; set; }
         [JsonIgnore]
-        public RoleEntity Role { get; set; } = null!;
+        public ICollection<FileEntity> Files { get; set; }
 
     }
 }
