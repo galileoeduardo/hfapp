@@ -1,0 +1,41 @@
+﻿@model HFApp.WEB.Models.Domain.Dtos.UsersDto
+@{ 
+    int counter = 0;
+}
+<h1>All Users</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Id</th>
+            <th scope="col">UserName</th>
+            <th scope="col">Email</th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        @if (Model.Users.Any())
+        {
+           
+
+            @foreach (var user in Model.Users)
+            {
+                { counter++; }
+                <tr>
+                    <th scope="row">@counter</th>
+                    <td>@user.Id</td>
+                    <td>@user.UserName</td>
+                    <td>@user.Email</td>
+                </tr>
+
+            }
+        } else
+        {
+            <tr>
+                <td colspan="4">No Records</td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
