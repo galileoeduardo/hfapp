@@ -77,6 +77,38 @@ namespace HFApp.WEB.Data
 
             builder.Entity<IdentityUserRole<string>>().HasData(userRolesSA);
 
+            var userRolesAdmin = new List<IdentityUserRole<string>>()
+            {
+                new IdentityUserRole<string>()
+                {
+                    RoleId = roles[0].Id,
+                    UserId  = users[1].Id
+                },
+                new IdentityUserRole<string>()
+                {
+                    RoleId = roles[1].Id,
+                    UserId  = users[1].Id
+                },
+                new IdentityUserRole<string>()
+                {
+                    RoleId = roles[2].Id,
+                    UserId  = users[1].Id
+                }
+            };
+
+            builder.Entity<IdentityUserRole<string>>().HasData(userRolesAdmin);
+
+            var userRolesUser = new List<IdentityUserRole<string>>()
+            {
+                new IdentityUserRole<string>()
+                {
+                    RoleId = roles[2].Id,
+                    UserId  = users[2].Id
+                }
+            };
+
+            builder.Entity<IdentityUserRole<string>>().HasData(userRolesUser);
+
         }
     }
 }

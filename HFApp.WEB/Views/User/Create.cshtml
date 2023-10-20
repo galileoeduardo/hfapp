@@ -1,0 +1,29 @@
+﻿@model HFApp.WEB.Models.Domain.Dtos.UserDto
+@{
+}
+<h1>Create User</h1>
+<form method="post">
+    <!-- UserName input -->
+    <div class="form mb-4">
+        <input type="text" id="form-user" class="form-control" asp-for="UserName" />
+        <label class="form-label" for="form-user">user name</label>
+    </div>
+
+    <!-- Password input -->
+    <div class="form mb-4">
+        <input type="password" id="form-pass" class="form-control" asp-for="Password" />
+        <label class="form-label" for="form-pass">Password</label>
+    </div>
+
+    <!-- Email input -->
+    <div class="form mb-4">
+        <input type="email" id="form-user" class="form-control" asp-for="Email" />
+        <label class="form-label" for="form-user">Email</label>
+    </div>
+
+    <!-- Submit button -->
+    <button type="submit" class="btn btn-dark">Add</button>
+
+    <input type="hidden" asp-for="ReturnUrl" />
+
+</form>

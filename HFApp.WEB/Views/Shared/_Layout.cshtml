@@ -45,11 +45,11 @@
                     <div class="text-dark p-2">
                         @User?.Identity?.Name
                     </div>
-                    <a class="nav-link btn text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
+                    <a class="btn btn-secondary" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
                 }
                 else
                 {
-                    <a class="nav-link btn text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                    <a class="btn btn-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
                 }
             </div>
         </nav>
