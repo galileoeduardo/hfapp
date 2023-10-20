@@ -1,0 +1,71 @@
+﻿@model IEnumerable<HFApp.WEB.Models.Domain.Entities.FileEntity>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>All Files</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.UID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MineTypes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UpdatedAt)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MineTypes.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdatedAt)
+            </td>
+            <td>
+                <a asp-action="Edit" class="btn btn-secondary" asp-route-id="@item.Id">Edit</a>
+                <a asp-action="Details" class="btn btn-light" asp-route-id="@item.Id">Details</a>
+                <a asp-action="Delete" class="btn btn-danger" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
