@@ -68,5 +68,26 @@ namespace HFApp.WEB.Controllers
 
             return RedirectToAction("List","User");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var idUser = await _userManager.FindByIdAsync(id.ToString());
+            if (idUser is not null)
+            {
+                var result = _userManager.DeleteAsync(idUser);
+                if (result is not null)
+                {
+                    var user = _context.UserEntities.SingleOrDefault(e => e.IdentityUserId.Equals(id));
+                    if (user is not null)
+                    {
+                        _context.UserEntities.Remove(user);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+
+            return RedirectToAction("List", "User");
+        }
     }
 }
