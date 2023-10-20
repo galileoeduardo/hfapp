@@ -1,5 +1,6 @@
 using HFApp.WEB.Data;
 using HFApp.WEB.Repositories;
+using HFApp.WEB.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,6 +33,8 @@ builder.Services.Configure<IdentityOptions>(options => {
 });
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddTransient<IFileServices, FileServices>();
 
 var app = builder.Build();
 

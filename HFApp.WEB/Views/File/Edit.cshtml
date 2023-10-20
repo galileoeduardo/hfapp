@@ -21,16 +21,8 @@
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="MineTypesId" class="control-label"></label>
-                <select asp-for="MineTypesId" class="form-control" asp-items="ViewBag.MineTypesId"></select>
-                <span asp-validation-for="MineTypesId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
-                <span asp-validation-for="UserId" class="text-danger"></span>
-            </div>
+            <input type="hidden" asp-for="MineTypesId" class="form-control" value="@ViewBag.MineTypesId"/>
+            <input asp-for="UserId" type="hidden" class="form-control" value="@ViewBag.UserId"/>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

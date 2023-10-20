@@ -1,42 +1,34 @@
-﻿@using System.Security.Claims;
-@model HFApp.WEB.Models.Domain.Entities.FileEntity
+﻿@model HFApp.WEB.Models.Domain.Entities.FileEntity
 
 @{
     ViewData["Title"] = "Create";
-    ClaimsPrincipal currentUser = this.User;
-    var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+    Guid guid = Guid.NewGuid();
 }
 
 <h1>Create File</h1>
-
+<form method="post" action="Home/ContactUs" enctype="multipart/form-data"></form>
 
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create" method="post">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input asp-for="UID" type="hidden" value="@currentUserID" class="form-control" />
+            <input asp-for="Title" type="hidden" value="#" class="form-control" />
+            <input asp-for="UID" type="hidden" value="@guid" class="form-control" />
             <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+                <input type="file" name="file" id="fileUpload">
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="MineTypesId" class="control-label"></label>
-                <select asp-for="MineTypesId" class ="form-control" asp-items="ViewBag.MineTypesId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
-            </div>
-            <div class="form-group">
+            <input asp-for="UserId" class="form-control" type="hidden" value="@ViewBag.UserId"/>
+            <input asp-for="MineTypesId" class="form-control" type="hidden" value="1" />
+            <div class="form-group mt-2">
                 <input type="submit" value="Create" class="btn btn-primary" />
                 <a asp-action="Index" class="btn btn-light">Back to List</a>
             </div>
+            
         </form>
     </div>
 </div>
