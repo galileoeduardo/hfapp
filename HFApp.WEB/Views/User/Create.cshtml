@@ -2,7 +2,25 @@
 @{
 }
 <h1>Create User</h1>
-<form method="post">
+@if (Model.Errors.Count > 0)
+{
+    <div class="alert alert-warning" role="alert">
+        <h4 class="alert-heading">Error</h4>
+        <hr>
+        @foreach (var erro in Model.Errors)
+        {
+            <p>
+                <strong>@erro.Code</strong>
+                @erro.Description
+            </p>
+            <hr>
+        }
+
+
+    </div>
+
+}
+<form method="post" asp-action="Insert">
     <!-- UserName input -->
     <div class="form mb-4">
         <input type="text" id="form-user" class="form-control" asp-for="UserName" />
@@ -21,9 +39,15 @@
         <label class="form-label" for="form-user">Email</label>
     </div>
 
+    <!-- Role input -->
+    <div class="form mb-4">
+        @Html.DropDownListFor(model => model.IdentityRoleName, (SelectList)ViewBag.Roles, "Select a role",new { @class = "form-control"})
+        <label class="form-label" for="IdentityRoleName">Email</label>
+        
+    </div>
+
     <!-- Submit button -->
     <button type="submit" class="btn btn-dark">Add</button>
-
     <input type="hidden" asp-for="ReturnUrl" />
-
+    
 </form>

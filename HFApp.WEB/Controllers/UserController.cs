@@ -5,7 +5,9 @@ using HFApp.WEB.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Data;
 
 namespace HFApp.WEB.Controllers
@@ -16,53 +18,106 @@ namespace HFApp.WEB.Controllers
         private readonly IUserRepository _userRepository;
         private readonly HFDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UserController(HFDbContext context, UserManager<IdentityUser> userManager, IUserRepository userRepository)
+        public UserController(HFDbContext context, UserManager<IdentityUser> userManager, IUserRepository userRepository, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _userManager = userManager;
             _userRepository = userRepository;
+            _roleManager = roleManager;
         }
-        public async Task<IActionResult> List()
+        public async Task<IActionResult> List(UsersDto model)
         {
             var users  = await _userRepository.GetAll();
-            var model = new UsersDto();
             foreach (var user in users)
             {
+                var roles = await _userManager.GetRolesAsync(user);
                 model.Users.Add(new UserDto()
                 {
                     Id = user.Id.ToString(),
                     UserName = user.UserName,
-                    Email = user.Email
+                    Password = "*******",
+                    IdentityRoleName = string.Join(",", roles.ToArray()),
+                    Email = (string.IsNullOrEmpty(user.Email)) ? string.Empty : user.Email,
                 });
             }
+
             return View(model);
         }
 
         [HttpGet]
-        public ActionResult Create(string ReturnUrl)
+        public ActionResult Create(UserDto model)
         {
-            var model = new UserDto() { ReturnUrl = ReturnUrl };
+            ViewBag.Roles = new SelectList(_roleManager.Roles.ToList(), "Name", "Name");
             return View(model);
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> Create(UserDto user)
+        public async Task<IActionResult> Insert(UserDto model)
         {
-            var identityUser = new IdentityUser() { UserName = user.UserName, Email = user.Email };
-            var result = await _userManager.CreateAsync(identityUser, user.Password);
+            if (!ModelState.IsValid)
+            {
+                foreach (var child in ModelState.Root.Children)
+                {
+                    if (!child.Errors.Any()) continue;
+                    model.Errors.Add(new ErrorDto()
+                    {
+                        Code = "ModelNotValid",
+                        Description = child.Errors.FirstOrDefault().ErrorMessage
+                    });
+                }
+                ViewData["IdentityRoleName"] = new SelectList(_roleManager.Roles.ToList(), "Name", "Name");
+                return View("Create", model);
+            }
+
+            var identityUser = new IdentityUser() { UserName = model.UserName, Email = model.Email };
+
+            var result = await _userManager.CreateAsync(identityUser, model.Password);
             if (result.Succeeded)
             {
-                var result2 = await _userManager.AddToRoleAsync(identityUser, "User");
+
+                if (!ModelState.IsValid)
+                {
+                    foreach (var child in ModelState.Root.Children)
+                    {
+                        if (!child.Errors.Any()) continue;
+                        model.Errors.Add(new ErrorDto()
+                        {
+                            Code = child.Errors.FirstOrDefault().Exception.Message,
+                            Description = child.Errors.FirstOrDefault().ErrorMessage
+                        });
+                    }
+                    ViewData["IdentityRoleName"] = new SelectList(_roleManager.Roles.ToList(), "Name", "Name");
+                    return View("Create", model);
+                }
+                var result2 = await _userManager.AddToRoleAsync(identityUser, model.IdentityRoleName);
                 if (result2.Succeeded)
                 {
                     _context.UserEntities.Add(new UserEntity()
                     {
                         CreatedAt = DateTime.UtcNow,
-                        IdentityUserId = new Guid(identityUser.Id)
+                        IdentityUserId = new Guid(identityUser.Id),
+                        IdentityUserName = model.UserName
                     });
                     await _context.SaveChangesAsync();
+                }
+            } 
+            else
+            {
+                if (result.Errors.Any())
+                {
+                    foreach (var erro in result.Errors)
+                    {
+                        model.Errors.Add(new ErrorDto()
+                        {
+                            Code = erro.Code,
+                            Description = erro.Description
+                        });
+                    }
+                    ViewData["IdentityRoleName"] = new SelectList(_roleManager.Roles.ToList(), "Name", "Name"); 
+                    return View("Create",model);
                 }
             }
 

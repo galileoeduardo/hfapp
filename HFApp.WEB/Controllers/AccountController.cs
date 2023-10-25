@@ -35,7 +35,7 @@ namespace HFApp.WEB.Controllers
                 {
                     return RedirectToPage(account.ReturnUrl);
                 }
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Index","File");
             }
 
             return View();

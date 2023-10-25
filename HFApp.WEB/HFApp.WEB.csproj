@@ -7,6 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Uploads\022fbd67-10e6-4e2c-abbf-8929d82eb0a8.pdf" />
+    <None Remove="Uploads\1d1976fd-ed16-41bb-97b7-1bbc23bc5eba.pdf" />
+    <None Remove="Uploads\5080d730-90e9-42d1-bdcc-9477ba4154a4.pdf" />
+    <None Remove="Uploads\9e869b68-fe8e-4de6-be4c-57810bb24e75.pdf" />
+    <None Remove="Uploads\abb8636e-996e-436e-afe7-da14debb8905.pdf" />
+    <None Remove="Uploads\d5938b76-2b3b-406c-ae4f-bf1f851f5ed0.pdf" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.12" />
@@ -15,6 +24,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Uploads\" />
   </ItemGroup>
 
 </Project>

@@ -26,9 +26,9 @@ namespace HFApp.WEB.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<UserEntity>().HasData(
-              new UserEntity() { Id = 1, CreatedAt = DateTime.UtcNow, IdentityUserId = new Guid("9317279f-639b-420f-8a9c-363a4cacabc5") },
-              new UserEntity() { Id = 2, CreatedAt = DateTime.UtcNow,  IdentityUserId = new Guid("9317279f-639b-420f-8a9c-363a4cacabc5") },
-              new UserEntity() { Id = 3, CreatedAt = DateTime.UtcNow, IdentityUserId = new Guid("9317279f-639b-420f-8a9c-363a4cacabc5") }
+              new UserEntity() { Id = 1, CreatedAt = DateTime.UtcNow, IdentityUserId = new Guid("9317279f-639b-420f-8a9c-363a4cacabc5"), IdentityUserName = "sa" },
+              new UserEntity() { Id = 2, CreatedAt = DateTime.UtcNow,  IdentityUserId = new Guid("6b50e04c-323b-4f11-88c4-c15d8aedac92"), IdentityUserName = "josuel.lopes" },
+              new UserEntity() { Id = 3, CreatedAt = DateTime.UtcNow, IdentityUserId = new Guid("b940e4f1-daf1-49af-ab92-f2d25d1e8dc6"), IdentityUserName = "eduardo.vieira" }
            );
 
             modelBuilder.Entity<MineTypesEntity>().HasData(
@@ -50,8 +50,7 @@ namespace HFApp.WEB.Data
             modelBuilder.Entity<MineTypesEntity>()
             .HasMany(e => e.File)
             .WithOne(e => e.MineTypes)
-            .HasForeignKey(e => e.MineTypesId)
-            .IsRequired();
+            .HasForeignKey(e => e.MineTypesId);
         }   
     }
 }

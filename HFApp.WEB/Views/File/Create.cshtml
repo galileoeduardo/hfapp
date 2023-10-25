@@ -1,4 +1,4 @@
-﻿@model HFApp.WEB.Models.Domain.Entities.FileEntity
+﻿@model HFApp.WEB.Models.Domain.Dtos.FileDto
 
 @{
     ViewData["Title"] = "Create";
@@ -6,11 +6,27 @@
 }
 
 <h1>Create File</h1>
-<form method="post" action="Home/ContactUs" enctype="multipart/form-data"></form>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" method="post" enctype="multipart/form-data">
+@if (Model.Errors.Count > 0)
+{
+    <div class="alert alert-warning" role="alert">
+        <h4 class="alert-heading">Error</h4>
+        <hr>
+        @foreach (var erro in Model.Errors)
+        {
+            <p>
+                <strong>@erro.Code</strong> - @erro.Description
+            </p>
+            <hr>
+        }
+
+
+    </div>
+
+}
+<form method="post" asp-action="Insert" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-4">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input asp-for="Title" type="hidden" value="#" class="form-control" />
             <input asp-for="UID" type="hidden" value="@guid" class="form-control" />
@@ -22,16 +38,15 @@
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <input asp-for="UserId" class="form-control" type="hidden" value="@ViewBag.UserId"/>
+            <input asp-for="UserId" class="form-control" type="hidden" value="@Model.UserId" />
             <input asp-for="MineTypesId" class="form-control" type="hidden" value="1" />
             <div class="form-group mt-2">
                 <input type="submit" value="Create" class="btn btn-primary" />
                 <a asp-action="Index" class="btn btn-light">Back to List</a>
             </div>
-            
-        </form>
+        </div>
     </div>
-</div>
+</form>
 
 
 @section Scripts {

@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace HFApp.WEB.Models.Domain.Entities
 {
@@ -17,6 +16,8 @@ namespace HFApp.WEB.Models.Domain.Entities
 
         [JsonIgnore]
         public UserEntity User { get; set; } = null!;
+
+        public string? JsonData { get; set; }
 
     }
 }

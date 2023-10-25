@@ -7,7 +7,7 @@ namespace HFApp.WEB.Models.Domain.Entities
         [Key]
         public int? Id { get; set; }
 
-        private DateTime? _createdAt;
+        private DateTime? _createdAt = DateTime.UtcNow;
 
         public DateTime? CreatedAt
         {

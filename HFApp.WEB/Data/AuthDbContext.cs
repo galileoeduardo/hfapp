@@ -81,17 +81,7 @@ namespace HFApp.WEB.Data
             {
                 new IdentityUserRole<string>()
                 {
-                    RoleId = roles[0].Id,
-                    UserId  = users[1].Id
-                },
-                new IdentityUserRole<string>()
-                {
                     RoleId = roles[1].Id,
-                    UserId  = users[1].Id
-                },
-                new IdentityUserRole<string>()
-                {
-                    RoleId = roles[2].Id,
                     UserId  = users[1].Id
                 }
             };
