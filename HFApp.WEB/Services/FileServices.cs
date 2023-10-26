@@ -1,8 +1,13 @@
 ﻿using HFApp.WEB.Models.Domain.Dtos;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+using NuGet.Protocol;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
+using System.Net.Security;
 using System.Text;
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace HFApp.WEB.Services
 {
@@ -11,6 +16,8 @@ namespace HFApp.WEB.Services
 
         private readonly IWebHostEnvironment _environment;
         private readonly string _uploadPath = "";
+        
+        private XmlNode root;
 
 
         public FileServices(IWebHostEnvironment environment)
@@ -93,17 +100,38 @@ namespace HFApp.WEB.Services
             return await Task.FromResult<FileStreamResult?>(null);
         }
 
-        public async Task<CompNfseDto?> GetJsonFromXML(string xml)
+        public async Task<string?> GetJsonFromXML(Stream xmlBuffer)
+        {
+            XmlDocument doc = BufferedReadStream(xmlBuffer);
+
+            XmlSerializer serializer = new XmlSerializer(typeof(CompNfseDto), new XmlRootAttribute("CompNfse"));
+            byte[] xmlBytes = Encoding.UTF8.GetBytes(doc.OuterXml);
+            using (StreamReader reader = new StreamReader(new MemoryStream(xmlBytes)))
+            {
+                CompNfseDto nfse = (CompNfseDto)serializer.Deserialize(reader);
+                string json = nfse.ToJson(Newtonsoft.Json.Formatting.Indented);
+                return await Task.FromResult<string?>(json.ToString());
+            }
+       }
+
+        private XmlDocument? BufferedReadStream(Stream bufferXml)
         {
             try
             {
-                var jsonObject = JsonConvert.DeserializeObject<CompNfseDto>(xml);
-                return await Task.FromResult<CompNfseDto?>(jsonObject);
+                using (StreamReader reader = new StreamReader(bufferXml))
+                {
+                    string strXml = reader.ReadToEnd();
+                    strXml = strXml.Replace(" xmlns=\"http://www.abrasf.org.br/nfse.xsd\"", String.Empty);
+
+                    XmlDocument xml = new XmlDocument();
+                    xml.Load(new StringReader(strXml));
+                    return xml;
+                }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
-                return await Task.FromResult<CompNfseDto?>(null);
+                return null;
             }
         }
     }

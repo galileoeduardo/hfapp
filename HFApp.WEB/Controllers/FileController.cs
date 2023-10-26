@@ -6,6 +6,7 @@ using System.Security.Claims;
 using HFApp.WEB.Services;
 using HFApp.WEB.Models.Domain.Dtos;
 using Microsoft.AspNetCore.Identity;
+using System.Xml;
 
 namespace HFApp.WEB.Controllers
 {
@@ -15,6 +16,7 @@ namespace HFApp.WEB.Controllers
         private readonly IFileServices _fileServices;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+
 
         public FileController(HFDbContext context, IFileServices fileServices, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
@@ -85,6 +87,7 @@ namespace HFApp.WEB.Controllers
             var arrName = model.File.FileName.Split('.');
             string origName = arrName.First();
             string ext = arrName.Last();
+            string? strJson = string.Empty;
 
             model.Title = origName;
 
@@ -104,11 +107,16 @@ namespace HFApp.WEB.Controllers
             model.MineTypesId = (int.TryParse(mine.Id.ToString(), out mineTypeId)) ? mineTypeId : 0;
             await _fileServices.UploadFileAsync(model.File.OpenReadStream(), $"{model.UID}.{ext}");
 
+            if (mineTypeId == 13)
+            {
+                strJson = await _fileServices.GetJsonFromXML(model.File.OpenReadStream());
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(new FileEntity() { 
                     Title = model.Title,
-                     Description = model.Description,
+                     Description = (model.Description == null) ? String.Empty : model.Description,
                      MineTypesId = model.MineTypesId,
                      UID = model.UID,
                      UserId = model.UserId,

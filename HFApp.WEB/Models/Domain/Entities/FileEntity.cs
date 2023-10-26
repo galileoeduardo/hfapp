@@ -6,7 +6,7 @@ namespace HFApp.WEB.Models.Domain.Entities
     {
         public Guid UID { get; set; }
         public string Title { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public int MineTypesId { get; set; }
 
         [JsonIgnore]
