@@ -5,6 +5,7 @@ using HFApp.WEB.Models.Domain.Entities;
 using System.Security.Claims;
 using HFApp.WEB.Services;
 using HFApp.WEB.Models.Domain.Dtos;
+using Microsoft.AspNetCore.Identity;
 
 namespace HFApp.WEB.Controllers
 {
@@ -12,18 +13,35 @@ namespace HFApp.WEB.Controllers
     {
         private readonly HFDbContext _context;
         private readonly IFileServices _fileServices;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public FileController(HFDbContext context, IFileServices fileServices)
+        public FileController(HFDbContext context, IFileServices fileServices, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _fileServices = fileServices;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         // GET: FileEntities
         public async Task<IActionResult> Index()
         {
-            var hFDbContext = _context.FileEntities.Include(f => f.MineTypes).Include(f => f.User);
-            return View(await hFDbContext.ToListAsync());
+            ClaimsPrincipal currentUser = this.User;
+            var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var user = _context.UserEntities.FirstOrDefault(e => e.IdentityUserId.Equals(new Guid(currentUserID)));
+            IEnumerable<FileEntity> hfDbContext;
+
+            if (User.IsInRole("SuperUser") || User.IsInRole("Admin"))
+            {
+                hfDbContext = await _context.FileEntities.Include(f => f.MineTypes).Include(f => f.User).ToListAsync(); 
+                
+            } else
+            {
+                hfDbContext = await _context.FileEntities.Include(f => f.MineTypes).Include(f => f.User).Where(e => e.UserId.Equals(user.Id)).ToListAsync();
+            }
+            
+            return View(hfDbContext);
         }
 
         // GET: FileEntities/Details/5
