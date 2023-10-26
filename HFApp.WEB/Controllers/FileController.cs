@@ -64,7 +64,7 @@ namespace HFApp.WEB.Controllers
         public async Task<IActionResult> Insert(FileDto model)
         {
 
-            var arrName = model.file.FileName.Split('.');
+            var arrName = model.File.FileName.Split('.');
             string origName = arrName.First();
             string ext = arrName.Last();
 
@@ -84,7 +84,7 @@ namespace HFApp.WEB.Controllers
             }
             int mineTypeId;
             model.MineTypesId = (int.TryParse(mine.Id.ToString(), out mineTypeId)) ? mineTypeId : 0;
-            await _fileServices.UploadFileAsync(model.file.OpenReadStream(), model.UID.ToString(), ext);
+            await _fileServices.UploadFileAsync(model.File.OpenReadStream(), $"{model.UID}.{ext}");
 
             if (ModelState.IsValid)
             {

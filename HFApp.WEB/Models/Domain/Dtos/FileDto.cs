@@ -2,7 +2,7 @@
 {
     public class FileDto : RequestDto
     {
-        public IFormFile file { get; set; }
+        public IFormFile  File { get; set; }
         public int Id { get; set; }
         public Guid UID { get; set; }
         public string? Title { get; set; }

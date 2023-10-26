@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.IO;
+using System.Text;
 
 namespace HFApp.WEB.Services
 {
@@ -17,7 +18,7 @@ namespace HFApp.WEB.Services
             _environment = environment;
             _uploadPath = Path.Combine(_environment.ContentRootPath, "Uploads");
         }
-        public async Task<bool> UploadFileAsync(Stream file, string fileName, string extension)
+        public async Task<bool> UploadFileAsync(Stream file, string fileNameOutput)
         {
             try
             {
@@ -25,10 +26,10 @@ namespace HFApp.WEB.Services
                 {
                     Directory.CreateDirectory(_uploadPath);
                 }
-                string outPath = Path.Combine(_uploadPath, $"{fileName}.{extension}");
-                using (StreamWriter outfile = new StreamWriter(outPath))
+                string outPath = Path.Combine(_uploadPath, fileNameOutput);
+                using (FileStream outfile = new FileStream(outPath, FileMode.Create))
                 {
-                    outfile.Write(file);
+                    await file.CopyToAsync(outfile);
                 }
 
                 return await Task.FromResult(true);
