@@ -28,6 +28,7 @@
                 @Html.DisplayNameFor(model => model.CreatedAt)
             </th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -45,6 +46,7 @@
                         origFileName = $"{item.Title}{item.MineTypes.Extension}"}
                         ,null)
                         </div>
+                        
                     </td>
                     <td class="align-middle">
                         @Html.DisplayFor(modelItem => item.Description)
@@ -58,10 +60,14 @@
                     <td class ="align-middle">
                         @Html.DisplayFor(modelItem => item.CreatedAt)
                     </td>
+                    <td>
+                        @Html.ActionLink("Detail","Details","File",new {id = item.Id}, new { @class = "btn btn-secondary"})
+                    </td>
                     <td class ="align-middle">
                         <form method="post" asp-controller="File" asp-action="Delete" asp-route-id="@item.Id">
                             <button type="button" class="btn btn-danger btn-delete" id="confirmButton">Delete</button>
                         </form>
+
                     </td>
                 </tr>
             }
