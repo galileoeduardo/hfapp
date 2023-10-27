@@ -38,3 +38,18 @@ dotnet ef migrations remove --context HFDbContext --force
 dotnet ef database drop --context AuthDbContext --force
 dotnet ef migrations remove --context AuthDbContext --force
 ```
+
+
+API endpoints:
+
+### Request
+`GET /api/FileEntities`
+
+### Request
+`GET /api/FileEntities/{id}`
+
+### Request
+`GET /api/UserEntities`
+
+### Request
+`GET /api/UserEntities/{id}`
