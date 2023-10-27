@@ -1,12 +1,9 @@
 ﻿using HFApp.WEB.Models.Domain.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol;
-using System.IdentityModel.Tokens.Jwt;
-using System.IO;
-using System.Net.Security;
 using System.Text;
 using System.Xml;
-using System.Xml.Linq;
+using System.Xml.Schema;
 using System.Xml.Serialization;
 
 namespace HFApp.WEB.Services
@@ -100,40 +97,95 @@ namespace HFApp.WEB.Services
             return await Task.FromResult<FileStreamResult?>(null);
         }
 
-        public async Task<string?> GetJsonFromXML(Stream xmlBuffer)
+        public async Task<string> DeserializeObject(string fileName)
         {
-            XmlDocument doc = BufferedReadStream(xmlBuffer);
+            string filePath = @$"{_uploadPath}\{fileName}";
 
-            XmlSerializer serializer = new XmlSerializer(typeof(CompNfseDto), new XmlRootAttribute("CompNfse"));
-            byte[] xmlBytes = Encoding.UTF8.GetBytes(doc.OuterXml);
-            using (StreamReader reader = new StreamReader(new MemoryStream(xmlBytes)))
-            {
-                CompNfseDto nfse = (CompNfseDto)serializer.Deserialize(reader);
-                string json = nfse.ToJson(Newtonsoft.Json.Formatting.Indented);
-                return await Task.FromResult<string?>(json.ToString());
-            }
-       }
+            FileStream fs = new FileStream(filePath, FileMode.Open);
 
-        private XmlDocument? BufferedReadStream(Stream bufferXml)
-        {
-            try
+            XmlReaderSettings nfseSettings = new XmlReaderSettings();
+            nfseSettings.ValidationType = ValidationType.Schema;
+            nfseSettings.ValidationFlags |= XmlSchemaValidationFlags.ProcessInlineSchema;
+            nfseSettings.ValidationFlags |= XmlSchemaValidationFlags.ProcessSchemaLocation;
+            nfseSettings.ValidationFlags |= XmlSchemaValidationFlags.ReportValidationWarnings;
+            nfseSettings.ConformanceLevel = ConformanceLevel.Fragment;
+            nfseSettings.Async = true;
+            nfseSettings.ToJson(Newtonsoft.Json.Formatting.Indented);
+            nfseSettings.ValidationEventHandler += new ValidationEventHandler(booksSettingsValidationEventHandler);
+
+            using (XmlReader reader = XmlReader.Create(fs, nfseSettings))
             {
-                using (StreamReader reader = new StreamReader(bufferXml))
+                StringBuilder sb = new StringBuilder("{");
+                int open = 1;
+                int close = 0;
+                int next = 0;
+                
+                while (await reader.ReadAsync())
                 {
-                    string strXml = reader.ReadToEnd();
-                    strXml = strXml.Replace(" xmlns=\"http://www.abrasf.org.br/nfse.xsd\"", String.Empty);
-
-                    XmlDocument xml = new XmlDocument();
-                    xml.Load(new StringReader(strXml));
-                    return xml;
+                    switch (reader.NodeType)
+                    {
+                        case XmlNodeType.Element:
+                            next = 0;
+                            if(sb.ToString().EndsWith(':')) {
+                                sb.Append('{');
+                                open++;
+                            }
+                            sb.Append($"\"{reader.Name}\":");
+                            next++;
+                            break;
+                        case XmlNodeType.Text:
+                            string value = await reader.GetValueAsync();
+                            sb.Append($"\"{value}\",");
+                            next++;
+                            break;
+                        case XmlNodeType.EndElement:
+                            next++;
+                            if (next % 4 == 0)
+                            {
+                                sb.Remove(sb.Length - 1, 1);
+                                sb.Append("},");
+                                close++;
+                            }
+                            break;
+                        default:
+                            Console.WriteLine("Other node {0} with value {1}",
+                                            reader.NodeType, reader.Value);
+                            break;
+                    }
                 }
-            }
-            catch (Exception)
-            {
 
-                return null;
+                if (sb.ToString().EndsWith(','))
+                {
+                    sb.Remove(sb.Length - 1, 1);
+                }
+
+                int length = open - close;
+                for (int i = 0; i < length; i++)
+                {
+                    sb.Append('}');
+                }
+                sb.Replace("\t",string.Empty);
+                sb.Replace("\n",string.Empty);
+                sb.Replace("\r",string.Empty);
+                return sb.ToString();
             }
         }
+
+        public static void booksSettingsValidationEventHandler(object sender, ValidationEventArgs e)
+        {
+            if (e.Severity == XmlSeverityType.Warning)
+            {
+                Console.Write("WARNING: ");
+                Console.WriteLine(e.Message);
+            }
+            else if (e.Severity == XmlSeverityType.Error)
+            {
+                Console.Write("ERROR: ");
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        
     }
 }
 

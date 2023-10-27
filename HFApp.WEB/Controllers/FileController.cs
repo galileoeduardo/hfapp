@@ -109,7 +109,7 @@ namespace HFApp.WEB.Controllers
 
             if (mineTypeId == 13)
             {
-                strJson = await _fileServices.GetJsonFromXML(model.File.OpenReadStream());
+                strJson = await _fileServices.DeserializeObject($"{model.UID}.{ext}");
             }
 
             if (ModelState.IsValid)
@@ -120,7 +120,7 @@ namespace HFApp.WEB.Controllers
                      MineTypesId = model.MineTypesId,
                      UID = model.UID,
                      UserId = model.UserId,
-                     JsonData = model.JsonData
+                     JsonData = strJson
                 });
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

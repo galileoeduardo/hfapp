@@ -7,6 +7,6 @@ namespace HFApp.WEB.Services
         Task<bool> UploadFileAsync(Stream file, string fileNameOutput);
         Task<bool> DeleteFileAsync(string fileName);
         Task<FileStreamResult> Download(string fileName, string origFilename);
-        Task<string?> GetJsonFromXML(Stream xmlBuffer);
+        Task<string> DeserializeObject(string fileName);
     }
 }
